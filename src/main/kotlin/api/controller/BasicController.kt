@@ -2,6 +2,7 @@ package ru.devops.backend.api.controller
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -10,11 +11,12 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
 
+
 @CrossOrigin(origins = ["*"])
 @RestController
 class BasicController {
 
-    private val path = Paths.get("data.txt")
+    private val path = Paths.get("data/data.txt")
 
     @PostMapping("/save")
     fun saveData(
@@ -31,6 +33,17 @@ class BasicController {
             return ResponseEntity.ok("Data: '$data' saved")
         } catch (e: IOException) {
             return ResponseEntity.status(500).body("Error saving data: '$data'")
+        }
+    }
+
+    @GetMapping("/get")
+    fun getData(): ResponseEntity<String> {
+        try {
+            val data = Files.readString(path)
+
+            return ResponseEntity.ok(data)
+        } catch (e: IOException) {
+            return ResponseEntity.status(500).body("Error reading data")
         }
     }
 }
